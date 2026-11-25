@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBite — Curated Food Delivery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <button type="button" class="brand-btn" id="brandBtn">
+        <span class="brand-mark">QB</span>
+        <span class="brand-wordmark">Quick<span>Bite</span></span>
+      </button>
+
+      <div class="search-wrap">
+        <span class="search-glyph">⌕</span>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search kitchens, biryani, woodfire pizza, dosa..."
+        />
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn btn-track hidden" id="trackOrderNavBtn">
+          <span class="status-pulse"></span>
+          <span>Track Order</span>
+        </button>
+
+        <div id="userStatusArea">
+          <button type="button" class="btn btn-ghost" id="openLoginBtn">
+            Login
+          </button>
+        </div>
+
+        <button type="button" class="btn btn-accent" id="openCartBtn">
+          <span>Cart</span>
+          <span class="cart-count-pill" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= HERO SECTION ================= -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Bengaluru Kitchens • Delivered Warm</span>
+        <h1>Thoughtfully prepared meals, brought straight to your table.</h1>
+        <p>
+          Discover handpicked neighborhood kitchens, add dishes to your cart, pay seamlessly via UPI, Card, or Cash, and follow your order in real time.
+        </p>
+        <div class="hero-actions">
+          <a href="#restaurantsSection" class="btn btn-accent btn-lg">Explore Restaurants</a>
+          <button type="button" class="btn btn-secondary-light btn-lg" id="demoLoginBtn">
+            Demo Login
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-frame">
+          <img
+            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=950&q=80"
+            alt="Chef plated dishes"
+          />
+          <div class="hero-caption-card">
+            <span class="caption-label">AVERAGE DELIVERY</span>
+            <strong>22–30 mins • Hygienic Packaging</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESTAURANTS & CUISINES ================= -->
+  <main class="container main-section" id="restaurantsSection">
+    <div class="section-head">
+      <div>
+        <span class="section-kicker">CURATED SELECTION</span>
+        <h2>Restaurants Near You</h2>
+      </div>
+      <div class="category-tabs" id="categoryTabs"></div>
+    </div>
+
+    <div class="restaurants-grid" id="restaurantsGrid"></div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <span class="brand-wordmark">Quick<span>Bite</span></span>
+        <p class="muted-text">Refined everyday dining delivered across Bengaluru.</p>
+      </div>
+      <div class="footer-notes">
+        <span>UPI & Card Ready</span>
+        <span>•</span>
+        <span>Live Order Tracking</span>
+        <span>•</span>
+        <span>Easy Order Cancellation</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= 1. LOGIN MODAL ================= -->
+  <div id="loginModal" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">MEMBER ACCESS</span>
+          <h2>Sign In to QuickBite</h2>
+        </div>
+        <button type="button" class="close-btn" data-close="loginModal">✕</button>
+      </div>
+
+      <form id="loginForm" class="form-body" novalidate>
+        <div class="form-group">
+          <label for="loginName">Full Name</label>
+          <input type="text" id="loginName" value="Ananya Reddy" placeholder="Enter your name" />
+        </div>
+
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" value="ananya@example.com" placeholder="you@example.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" value="123456" placeholder="Enter password" />
+        </div>
+
+        <p id="loginError" class="error-banner hidden"></p>
+
+        <button type="submit" class="btn btn-accent btn-block btn-lg">
+          Login & Continue
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= 2. FOOD ITEMS (MENU) MODAL ================= -->
+  <div id="menuModal" class="modal-overlay hidden">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker" id="menuRestCategory">CUISINE</span>
+          <h2 id="menuRestName">Restaurant Name</h2>
+          <p id="menuRestMeta" class="muted-text"></p>
+        </div>
+        <button type="button" class="close-btn" data-close="menuModal">✕</button>
+      </div>
+
+      <div class="menu-list" id="menuItemsList"></div>
+
+      <div class="modal-footer-bar">
+        <button type="button" class="btn btn-ghost" data-close="menuModal">← Back to Kitchens</button>
+        <button type="button" class="btn btn-accent" id="menuViewCartBtn">Review Cart →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 3. ADD TO CART DRAWER ================= -->
+  <div id="cartOverlay" class="drawer-overlay hidden"></div>
+  <aside id="cartSidebar" class="cart-sidebar">
+    <div class="cart-header">
+      <div>
+        <span class="modal-kicker">YOUR BAG</span>
+        <h3>Order Summary</h3>
+      </div>
+      <div class="cart-header-right">
+        <button type="button" id="clearCartBtn" class="link-danger hidden">Clear</button>
+        <button type="button" class="close-btn" id="closeCartBtn">✕</button>
+      </div>
+    </div>
+
+    <div id="cartRestaurantBanner" class="cart-banner hidden"></div>
+
+    <div id="cartItemsBody" class="cart-body"></div>
+
+    <div id="cartFooter" class="cart-footer hidden">
+      <div class="bill-row">
+        <span>Items Subtotal</span>
+        <span id="billSubtotal">₹0</span>
+      </div>
+      <div class="bill-row">
+        <span>Delivery Fee</span>
+        <span id="billDelivery">₹40</span>
+      </div>
+      <div class="bill-row">
+        <span>Taxes & Charges (5%)</span>
+        <span id="billTax">₹0</span>
+      </div>
+      <div class="bill-row bill-total">
+        <span>Total Payable</span>
+        <span id="billTotal">₹0</span>
+      </div>
+      <button type="button" class="btn btn-accent btn-block btn-lg" id="proceedToPayBtn">
+        Proceed to Payment →
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= 4. PAYMENT MODAL ================= -->
+  <div id="paymentModal" class="modal-overlay hidden">
+    <div class="modal modal-md">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">CHECKOUT</span>
+          <h2>Address & Payment</h2>
+        </div>
+        <button type="button" class="close-btn" data-close="paymentModal">✕</button>
+      </div>
+
+      <form id="paymentForm" class="form-body" novalidate>
+        <div class="form-group">
+          <label for="deliveryAddress">Delivery Address</label>
+          <input
+            type="text"
+            id="deliveryAddress"
+            value="Flat 302, Green View Apartments, Indiranagar, Bengaluru"
+            placeholder="Enter complete delivery address"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Select Payment Method</label>
+          <div class="payment-options">
+            <button type="button" class="pay-card active" data-method="UPI">
+              <span>UPI — Google Pay, PhonePe, Paytm</span>
+              <span class="radio-mark">●</span>
+            </button>
+            <button type="button" class="pay-card" data-method="Card">
+              <span>Credit or Debit Card</span>
+              <span class="radio-mark">○</span>
+            </button>
+            <button type="button" class="pay-card" data-method="COD">
+              <span>Cash on Delivery</span>
+              <span class="radio-mark">○</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="upiBox" class="pay-input-box">
+          <label for="upiInput">UPI ID</label>
+          <input type="text" id="upiInput" value="ananya@okicici" placeholder="yourname@upi" />
+        </div>
+
+        <div id="cardBox" class="pay-input-box hidden">
+          <label for="cardInput">Card Number</label>
+          <input type="text" id="cardInput" value="4532 8910 2234 7781" maxlength="19" />
+          <div class="two-col">
+            <div>
+              <label>Expiry</label>
+              <input type="text" value="09/29" maxlength="5" />
+            </div>
+            <div>
+              <label>CVV</label>
+              <input type="password" value="123" maxlength="3" />
+            </div>
+          </div>
+        </div>
+
+        <div id="codBox" class="pay-input-box hidden">
+          <p class="muted-text">Pay in cash to your delivery executive when the order arrives.</p>
+        </div>
+
+        <p id="paymentError" class="error-banner hidden"></p>
+
+        <div class="payment-footer">
+          <div>
+            <span class="muted-text">Total Amount</span>
+            <h3 id="finalPayAmount">₹0</h3>
+          </div>
+          <button type="submit" class="btn btn-emerald btn-lg">
+            Pay & Place Order
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= 5. ORDER PLACED, TRACKING & CANCEL MODAL ================= -->
+  <div id="trackingModal" class="modal-overlay hidden">
+    <div class="modal modal-md">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker" id="trackOrderId">#QB-1024</span>
+          <h2 id="trackHeading">Order is Placed!</h2>
+        </div>
+        <button type="button" class="close-btn" data-close="trackingModal">✕</button>
+      </div>
+
+      <div class="tracking-body">
+        <div id="statusBanner" class="status-banner placed">
+          <span class="status-badge-icon" id="statusIcon">✓</span>
+          <div>
+            <strong id="statusTitle">Order Confirmed by Kitchen</strong>
+            <p id="statusSubtitle">Estimated delivery in 25 mins</p>
+          </div>
+        </div>
+
+        <div id="trackingProgressSection">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBarFill" style="width: 25%;"></div>
+          </div>
+
+          <div class="tracking-steps">
+            <div class="track-step active" id="step1">
+              <strong>01. Placed</strong>
+              <span>Confirmed</span>
+            </div>
+            <div class="track-step" id="step2">
+              <strong>02. Cooking</strong>
+              <span>In kitchen</span>
+            </div>
+            <div class="track-step" id="step3">
+              <strong>03. On Way</strong>
+              <span>In transit</span>
+            </div>
+            <div class="track-step" id="step4">
+              <strong>04. Delivered</strong>
+              <span>Completed</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="receipt-box">
+          <div class="receipt-row">
+            <span>Customer</span>
+            <strong id="trackCustomer">Ananya Reddy</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Kitchen</span>
+            <strong id="trackRestaurant">Royal Spice Kitchen</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Items</span>
+            <span id="trackItems">1x Biryani</span>
+          </div>
+          <div class="receipt-row">
+            <span>Address</span>
+            <span id="trackAddress">Bengaluru</span>
+          </div>
+          <div class="receipt-row">
+            <span>Payment</span>
+            <strong id="trackPayment" class="text-emerald">Paid via UPI</strong>
+          </div>
+          <div class="receipt-row receipt-total">
+            <span>Total Paid</span>
+            <strong id="trackAmount">₹0</strong>
+          </div>
+        </div>
+
+        <div class="tracking-actions">
+          <button type="button" class="btn btn-ghost" id="nextStageBtn">
+            Update Status
+          </button>
+          <button type="button" class="btn btn-crimson" id="cancelOrderBtn">
+            Cancel Order
+          </button>
+        </div>
+
+        <button type="button" class="btn btn-accent btn-block btn-lg" id="orderMoreBtn" style="margin-top: 10px;">
+          Order More Food
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
